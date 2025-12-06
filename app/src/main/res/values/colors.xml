@@ -9,4 +9,7 @@
     <color name="cyan_dark">#0097A7</color>
     <color name="gray_input">#F5F5F5</color>
     <color name="gray_text">#757575</color>
+    <color name="sympla_blue">#0057FF</color>
+    <color name="gray_light">#F2F4F8</color>
+    <color name="gray_text_dark">#666666</color>
 </resources>

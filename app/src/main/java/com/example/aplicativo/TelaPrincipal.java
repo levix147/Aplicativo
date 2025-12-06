@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,6 +21,7 @@ public class TelaPrincipal extends AppCompatActivity {
     private TextView text_tela_cadastro;
     private EditText edit_email, edit_senha;
     private AppCompatButton bt_entrar;
+    private ImageView btn_voltar;
 
     private boolean senhaVisivel = false;
 
@@ -40,6 +41,16 @@ public class TelaPrincipal extends AppCompatActivity {
 
         configurarVisibilidadeSenha();
 
+
+        btn_voltar.setOnClickListener(v -> {
+
+
+
+            Intent intent = new Intent(TelaPrincipal.this, TeladeVisualizacao.class);
+            startActivity(intent);
+            finish();
+        });
+
         text_tela_cadastro.setOnClickListener(v -> {
             startActivity(new Intent(TelaPrincipal.this, FormCadastro.class));
         });
@@ -58,7 +69,7 @@ public class TelaPrincipal extends AppCompatActivity {
                 return;
             }
 
-            Intent intent = new Intent(TelaPrincipal.this, AdicionarAtividade.class);
+            Intent intent = new Intent(TelaPrincipal.this, TeladeVisualizacao.class);
             startActivity(intent);
             finish();
         });
@@ -89,13 +100,11 @@ public class TelaPrincipal extends AppCompatActivity {
                         edit_senha.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye, 0);
                     } else {
                         edit_senha.setTransformationMethod(null);
-                        edit_senha.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye_open, 0);
+                        edit_senha.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_eye, 0);
                     }
 
                     senhaVisivel = !senhaVisivel;
-
                     edit_senha.setSelection(edit_senha.getText().length());
-
                     return true;
                 }
             }
@@ -108,5 +117,6 @@ public class TelaPrincipal extends AppCompatActivity {
         edit_email = findViewById(R.id.edit_email);
         edit_senha = findViewById(R.id.edit_senha);
         bt_entrar = findViewById(R.id.bt_entrar);
+        btn_voltar = findViewById(R.id.btn_voltar);
     }
 }

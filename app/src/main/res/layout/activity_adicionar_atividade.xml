@@ -1,148 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:fillViewport="true"
-    tools:context=".AdicionarAtividade">
+    android:background="@color/white">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="32dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <ImageView
-            android:id="@+id/bt_voltar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_seta_back"
-            android:contentDescription="Voltar"
-            android:tint="@color/black"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/titulo_evento"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Criar Evento"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="24dp"
-            app:layout_constraintTop_toBottomOf="@id/bt_voltar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:paddingBottom="40dp">
 
+            <ImageView
+                android:id="@+id/bt_voltar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_seta_back"
+                android:contentDescription="Voltar"
+                app:tint="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-        <EditText
-            android:id="@+id/edit_titulo"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@drawable/background"
-            android:hint="Título do evento"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:drawableEnd="@drawable/ic_event"
-            android:drawablePadding="16dp"
-            android:drawableTint="@color/cyan_primary"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray_text"
-            app:layout_constraintTop_toBottomOf="@id/titulo_evento"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                android:id="@+id/titulo_tela"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Criar Evento"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/bt_voltar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bt_voltar" />
 
-        <EditText
-            android:id="@+id/edit_descricao"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:background="@drawable/background"
-            android:hint="Descrição"
-            android:gravity="top"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="16dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray_text"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/edit_titulo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_imagem"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F5F5F5"
+                app:layout_constraintTop_toBottomOf="@+id/bt_voltar">
 
-        <EditText
-            android:id="@+id/edit_data"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@drawable/background"
-            android:hint="Data"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:drawableEnd="@drawable/ic_calendario"
-            android:drawablePadding="16dp"
-            android:drawableTint="@color/cyan_primary"
-            android:focusable="false"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray_text"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/edit_descricao"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-        <EditText
-            android:id="@+id/edit_hora"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@drawable/background"
-            android:hint="Horário"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:drawableEnd="@drawable/ic_time"
-            android:drawablePadding="16dp"
-            android:drawableTint="@color/cyan_primary"
-            android:focusable="false"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray_text"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/edit_data"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_camera"
+                        app:tint="@color/sympla_blue"
+                        tools:ignore="ContentDescription" />
 
-        <EditText
-            android:id="@+id/edit_local"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@drawable/background"
-            android:hint="Local"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:drawableEnd="@drawable/ic_location"
-            android:drawablePadding="16dp"
-            android:drawableTint="@color/cyan_primary"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray_text"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/edit_hora"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Adicionar Capa"
+                        android:textColor="@color/sympla_blue"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_criar"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@drawable/button"
-            android:text="Criar Evento"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginTop="32dp"
-            android:textAllCaps="false"
-            app:layout_constraintTop_toBottomOf="@id/edit_local"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:id="@+id/container_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/card_imagem">
 
-</androidx.core.widget.NestedScrollView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Informações Principais"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <EditText
+                    android:id="@+id/edit_titulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/background"
+                    android:hint="Nome do evento"
+                    android:paddingHorizontal="20dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray_text" />
+
+                <EditText
+                    android:id="@+id/edit_descricao"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/background"
+                    android:gravity="top|start"
+                    android:hint="Descreva os detalhes do evento..."
+                    android:inputType="textMultiLine"
+                    android:padding="20dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Data e Hora"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/edit_data"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/background"
+                        android:drawableEnd="@drawable/ic_calendario"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="@color/sympla_blue"
+                        android:focusable="false"
+                        android:hint="Data"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray_text" />
+
+                    <EditText
+                        android:id="@+id/edit_hora"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/background"
+                        android:drawableEnd="@drawable/ic_time"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="@color/sympla_blue"
+                        android:focusable="false"
+                        android:hint="Horário"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray_text" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Localização"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <EditText
+                    android:id="@+id/edit_local"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/background"
+                    android:drawableEnd="@drawable/ic_location"
+                    android:drawablePadding="16dp"
+                    android:drawableTint="@color/sympla_blue"
+                    android:hint="Onde será o evento?"
+                    android:paddingHorizontal="20dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray_text" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bt_criar"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/button"
+                    android:backgroundTint="@color/sympla_blue"
+                    android:text="Publicar Evento"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
