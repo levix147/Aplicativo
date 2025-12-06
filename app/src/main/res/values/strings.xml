@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">GoPlan</string>
     <string name="entrar">Entrar</string>
     <string name="text_cadastro">Criar conta</string>
     <string name="titulo_crie_conta">Crie sua conta</string>
