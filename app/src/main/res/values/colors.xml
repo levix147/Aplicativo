@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="cian">#D4EAF7</color>
+    <color name="gray">#D4EAF7</color>
+    <color name="Light_Steel_Blue">#66F5FF</color>
+    <color name="cyan_primary">#00BCD4</color>
+    <color name="cyan_dark">#0097A7</color>
+    <color name="gray_input">#F5F5F5</color>
+    <color name="gray_text">#757575</color>
+</resources>

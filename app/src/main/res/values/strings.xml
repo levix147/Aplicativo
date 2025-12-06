@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="entrar">Entrar</string>
+    <string name="text_cadastro">Criar conta</string>
+    <string name="titulo_crie_conta">Crie sua conta</string>
+    <string name="text_btn_cadastrar">Cadastrar</string>
+    <string name="text_ja_tenho_conta">Já tem uma conta? Entrar</string>
+    <string name="subtitulo_cadastro">Preencha os dados para criar sua conta</string>
+    <string name="title_cadastro">Cadastre-se</string>
+</resources>

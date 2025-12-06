@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    tools:context=".AdicionarAtividade">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="32dp">
+
+        <ImageView
+            android:id="@+id/bt_voltar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_seta_back"
+            android:contentDescription="Voltar"
+            android:tint="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/titulo_evento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Criar Evento"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintTop_toBottomOf="@id/bt_voltar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+        <EditText
+            android:id="@+id/edit_titulo"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/background"
+            android:hint="Título do evento"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableEnd="@drawable/ic_event"
+            android:drawablePadding="16dp"
+            android:drawableTint="@color/cyan_primary"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_text"
+            app:layout_constraintTop_toBottomOf="@id/titulo_evento"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/edit_descricao"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:background="@drawable/background"
+            android:hint="Descrição"
+            android:gravity="top"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="16dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_text"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/edit_titulo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/edit_data"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/background"
+            android:hint="Data"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableEnd="@drawable/ic_calendario"
+            android:drawablePadding="16dp"
+            android:drawableTint="@color/cyan_primary"
+            android:focusable="false"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_text"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/edit_descricao"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/edit_hora"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/background"
+            android:hint="Horário"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableEnd="@drawable/ic_time"
+            android:drawablePadding="16dp"
+            android:drawableTint="@color/cyan_primary"
+            android:focusable="false"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_text"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/edit_data"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/edit_local"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/background"
+            android:hint="Local"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:drawableEnd="@drawable/ic_location"
+            android:drawablePadding="16dp"
+            android:drawableTint="@color/cyan_primary"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_text"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/edit_hora"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_criar"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/button"
+            android:text="Criar Evento"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="32dp"
+            android:textAllCaps="false"
+            app:layout_constraintTop_toBottomOf="@id/edit_local"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
