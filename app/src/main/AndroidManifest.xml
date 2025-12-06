@@ -12,8 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Aplicativo">
 
+        <!-- Tela de Login definida como inicial (Launcher) -->
         <activity
-            android:name=".TeladeVisualizacao"
+            android:name=".TelaPrincipal"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".TelaPrincipal"
+            android:name=".TeladeVisualizacao"
             android:exported="false" />
 
         <activity
@@ -31,6 +32,10 @@
 
         <activity
             android:name=".AdicionarAtividade"
+            android:exported="false" />
+            
+        <activity
+            android:name=".MainActivity"
             android:exported="false" />
 
     </application>

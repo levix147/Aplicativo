@@ -1,6 +1,7 @@
 package com.example.aplicativo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
@@ -8,6 +9,7 @@ import android.view.MotionEvent;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,13 +43,8 @@ public class TelaPrincipal extends AppCompatActivity {
 
         configurarVisibilidadeSenha();
 
-
         btn_voltar.setOnClickListener(v -> {
-
-
-
-            Intent intent = new Intent(TelaPrincipal.this, TeladeVisualizacao.class);
-            startActivity(intent);
+            // Como esta é a tela principal, voltar fecha o app.
             finish();
         });
 
@@ -61,18 +58,35 @@ public class TelaPrincipal extends AppCompatActivity {
 
             if (email.isEmpty()) {
                 edit_email.setError("Preencha o e-mail");
+                edit_email.requestFocus();
                 return;
             }
 
             if (senha.isEmpty()) {
                 edit_senha.setError("Preencha a senha");
+                edit_senha.requestFocus();
                 return;
             }
 
+            validarLogin(email, senha);
+        });
+    }
+
+    private void validarLogin(String email, String senha) {
+        // Verifica os dados salvos no SharedPreferences (simulando banco de dados)
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String emailSalvo = prefs.getString("user_email", "");
+        String senhaSalva = prefs.getString("user_password", "");
+
+        if (emailSalvo.isEmpty()) {
+            Toast.makeText(this, "Usuário não possui cadastro.", Toast.LENGTH_SHORT).show();
+        } else if (email.equals(emailSalvo) && senha.equals(senhaSalva)) {
             Intent intent = new Intent(TelaPrincipal.this, TeladeVisualizacao.class);
             startActivity(intent);
             finish();
-        });
+        } else {
+            Toast.makeText(this, "E-mail ou senha incorretos.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void configurarVisibilidadeSenha() {

@@ -1,7 +1,7 @@
 package com.example.aplicativo;
 
-import android.app.DatePickerDialog; // Import necessário
-import android.app.TimePickerDialog; // Import necessário
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,12 +18,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.Calendar; // Import para pegar a data atual
+import java.util.Calendar;
 import java.util.Locale;
 
 public class AdicionarAtividade extends AppCompatActivity {
 
     private EditText editTitulo, editDescricao, editData, editHora, editLocal;
+    private TaskRepository taskRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class AdicionarAtividade extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_adicionar_atividade);
 
+        taskRepository = new TaskRepository(this);
 
         editTitulo = findViewById(R.id.edit_titulo);
         editDescricao = findViewById(R.id.edit_descricao);
@@ -55,7 +57,6 @@ public class AdicionarAtividade extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
                                 String dataFormatada = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, month + 1, year);
                                 editData.setText(dataFormatada);
                             }
@@ -97,6 +98,7 @@ public class AdicionarAtividade extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String titulo = editTitulo.getText().toString();
+                String descricao = editDescricao.getText().toString();
                 String data = editData.getText().toString();
                 String hora = editHora.getText().toString();
                 String local = editLocal.getText().toString();
@@ -106,13 +108,13 @@ public class AdicionarAtividade extends AppCompatActivity {
                     return;
                 }
 
-                Intent intent = new Intent(AdicionarAtividade.this, TeladeVisualizacao.class);
-                intent.putExtra("NOVO_TITULO", titulo);
-                intent.putExtra("NOVA_DATA", data);
-                intent.putExtra("NOVA_HORA", hora);
-                intent.putExtra("NOVO_LOCAL", local);
-
-                startActivity(intent);
+                Task novaTask = new Task(titulo, descricao, data, hora, local, "A_FAZER");
+                taskRepository.saveTask(novaTask);
+                
+                Toast.makeText(AdicionarAtividade.this, "Evento criado com sucesso!", Toast.LENGTH_SHORT).show();
+                
+                // Em vez de iniciar uma nova atividade, apenas fechamos esta.
+                // A atividade pai (TeladeVisualizacao) deve atualizar a lista no onResume.
                 finish();
             }
         });
