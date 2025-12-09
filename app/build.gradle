@@ -1,18 +1,17 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
 // Adiciona a logica para ler o arquivo local.properties
 Properties properties = new Properties()
 if (rootProject.file("local.properties").exists()) {
     properties.load(rootProject.file("local.properties").newDataInputStream())
 }
 
-plugins {
-    alias(libs.plugins.android.application)
-    id 'com.google.gms.google-services'
-}
-
 android {
     namespace 'com.example.aplicativo'
-    compileSdk 36
-    // Ajustado para uma versao estavel comum
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.aplicativo"
@@ -37,29 +36,32 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-    // Adicionado para resolver conflitos de packaging com as novas dependencias
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
+    }
+
+    // Habilita a geracao do BuildConfig
+    buildFeatures {
+        buildConfig true
     }
 }
 
 dependencies {
-    implementation libs.appcompat
-    implementation libs.material
-    implementation libs.activity
-    implementation libs.constraintlayout
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.activity:activity:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:33.1.0')
 
-    // Add the dependencies for the Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
+    // Dependencias do Firebase
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-firestore'
-    implementation 'com.google.firebase:firebase-auth' // Dependencia de Autenticacao
+    implementation 'com.google.firebase:firebase-auth'
 
     // Dependencia para Login com Google
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
@@ -71,8 +73,7 @@ dependencies {
     implementation 'com.google.api-client:google-api-client-android:2.2.0'
     implementation 'com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0'
 
-
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
