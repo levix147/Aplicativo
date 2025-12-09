@@ -1,6 +1,12 @@
 package com.example.aplicativo;
 
-public class Task {
+import com.google.firebase.firestore.DocumentId;
+
+public class Tarefa {
+
+    @DocumentId
+    private String id;
+
     private String titulo;
     private String descricao;
     private String data;
@@ -8,7 +14,10 @@ public class Task {
     private String local;
     private String status; // "A_FAZER", "FAZENDO", "FEITO"
 
-    public Task(String titulo, String descricao, String data, String hora, String local, String status) {
+    // Construtor vazio necessario para o Firestore
+    public Tarefa() {}
+
+    public Tarefa(String titulo, String descricao, String data, String hora, String local, String status) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.data = data;
@@ -17,6 +26,8 @@ public class Task {
         this.status = status;
     }
 
+    // Getters
+    public String getId() { return id; }
     public String getTitulo() { return titulo; }
     public String getDescricao() { return descricao; }
     public String getData() { return data; }
@@ -24,5 +35,12 @@ public class Task {
     public String getLocal() { return local; }
     public String getStatus() { return status; }
 
+    // Setters
+    public void setId(String id) { this.id = id; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public void setData(String data) { this.data = data; }
+    public void setHora(String hora) { this.hora = hora; }
+    public void setLocal(String local) { this.local = local; }
     public void setStatus(String status) { this.status = status; }
 }

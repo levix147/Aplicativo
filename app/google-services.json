@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1086228142420",
-    "project_id": "projeto-senai-3d6bb",
-    "storage_bucket": "projeto-senai-3d6bb.firebasestorage.app"
+    "project_number": "355425676518",
+    "project_id": "goplan-7c678",
+    "storage_bucket": "goplan-7c678.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1086228142420:android:945fc2420427b7e3e5d0c1",
+        "mobilesdk_app_id": "1:355425676518:android:2aeceafb70e18180e7df27",
         "android_client_info": {
           "package_name": "com.example.aplicativo"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5o84uq8x5eQf_gNFmscStY8bsG0v_wyY"
+          "current_key": "AIzaSyBATNadzmTVdDuXKQDZpBWUs4p9TFFtaSg"
         }
       ],
       "services": {
