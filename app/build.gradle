@@ -1,3 +1,9 @@
+// Adiciona a logica para ler o arquivo local.properties
+Properties properties = new Properties()
+if (rootProject.file("local.properties").exists()) {
+    properties.load(rootProject.file("local.properties").newDataInputStream())
+}
+
 plugins {
     alias(libs.plugins.android.application)
     id 'com.google.gms.google-services'
@@ -16,6 +22,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Disponibiliza a chave para o AndroidManifest.xml
+        manifestPlaceholders = [ MAPS_API_KEY:"${properties.getProperty("MAPS_API_KEY", "")}" ]
+
+        // Disponibiliza a chave para o codigo Java/Kotlin (BuildConfig)
+        buildConfigField "String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY", "")}\""
     }
 
     buildTypes {
