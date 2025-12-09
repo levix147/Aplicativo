@@ -28,6 +28,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    // Adicionado para resolver conflitos de packaging com as novas dependencias
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -47,6 +51,14 @@ dependencies {
 
     // Dependencia para Login com Google
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
+
+    // Dependencia para Servicos de Localizacao
+    implementation 'com.google.android.gms:play-services-location:21.2.0'
+
+    // Dependencias para a API do Google Calendar
+    implementation 'com.google.api-client:google-api-client-android:2.2.0'
+    implementation 'com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0'
+
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
