@@ -23,6 +23,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.CalendarScopes;
@@ -30,6 +31,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -92,14 +94,11 @@ public class AdicionarAtividade extends AppCompatActivity {
             }
         });
 
-        // Este launcher agora apenas chama o metodo de salvar, garantindo que a permissao foi dada ANTES
         requestCalendarPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 salvarTarefaEEventoNoCalendario();
             } else {
                 Toast.makeText(this, "Permissão de calendário negada. Evento não adicionado à agenda.", Toast.LENGTH_LONG).show();
-                // Opcional: salvar mesmo assim no app, ou nao fazer nada.
-                // Por seguranca, vamos apenas notificar o usuario.
             }
         });
     }
@@ -107,7 +106,6 @@ public class AdicionarAtividade extends AppCompatActivity {
     private void configurarClienteGoogleCalendar() {
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(this);
         if (googleAccount == null) {
-            // Se nao houver conta logada, o switch nem deveria estar visivel/habilitado
             switchGoogleCalendar.setEnabled(false);
             return;
         }
@@ -117,28 +115,25 @@ public class AdicionarAtividade extends AppCompatActivity {
         credential.setSelectedAccount(googleAccount.getAccount());
 
         calendarService = new com.google.api.services.calendar.Calendar.Builder(
-                com.google.api.client.http.javanet.NetHttpTransport.INSTANCE,
+                new NetHttpTransport(), // CORRECAO APLICADA AQUI
                 GsonFactory.getDefaultInstance(),
                 credential)
                 .setApplicationName(getString(R.string.app_name))
                 .build();
     }
 
-    // PASSO 1 do fluxo de salvar
     private void iniciarProcessoDeSalvar() {
         if (editTitulo.getText().toString().isEmpty() || editData.getText().toString().isEmpty() || editHora.getText().toString().isEmpty()) {
             Toast.makeText(this, "Preencha título, data e hora!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Se o switch estiver desligado, apenas salva a tarefa no app e termina.
         if (!switchGoogleCalendar.isChecked()) {
             salvarApenasTarefaLocal();
             finish();
             return;
         }
 
-        // Se o switch estiver ligado, verifica a permissao do calendario ANTES de qualquer acao.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
             salvarTarefaEEventoNoCalendario();
         } else {
@@ -146,20 +141,16 @@ public class AdicionarAtividade extends AppCompatActivity {
         }
     }
 
-    // PASSO 2 (Opcao A): Salva apenas no Firestore
     private void salvarApenasTarefaLocal() {
         Tarefa novaTarefa = criarTarefaAPartirDoForm();
         tarefaRepositorio.salvarTarefa(novaTarefa);
         Toast.makeText(this, "Evento criado com sucesso!", Toast.LENGTH_SHORT).show();
     }
 
-    // PASSO 2 (Opcao B): Salva no Firestore E no Google Calendar
     private void salvarTarefaEEventoNoCalendario() {
-        // Cria a tarefa para o Firestore
         Tarefa novaTarefa = criarTarefaAPartirDoForm();
         tarefaRepositorio.salvarTarefa(novaTarefa);
 
-        // Inicia a thread para adicionar ao Google Calendar
         new Thread(() -> {
             try {
                 Event evento = new Event()
@@ -187,7 +178,7 @@ public class AdicionarAtividade extends AppCompatActivity {
                 Log.e(TAG, "Erro ao adicionar evento no Google Calendar", e);
                 runOnUiThread(() -> Toast.makeText(AdicionarAtividade.this, "Falha ao adicionar na agenda. Evento salvo apenas no app.", Toast.LENGTH_LONG).show());
             }
-            finish(); // Fecha a activity apos a conclusao da thread
+            finish();
         }).start();
     }
 
@@ -200,7 +191,6 @@ public class AdicionarAtividade extends AppCompatActivity {
         return new Tarefa(titulo, descricao, data, hora, local, "A_FAZER");
     }
 
-    // --- Metodos de Localizacao ---
     private void buscarLocalizacaoAtual() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             obterLocalizacao();
@@ -232,7 +222,6 @@ public class AdicionarAtividade extends AppCompatActivity {
         }
     }
 
-    // --- Metodos de Data e Hora ---
     private void mostrarDatePicker() {
         new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             calendarStart.set(Calendar.YEAR, year);
