@@ -32,6 +32,9 @@
             android:name=".AdicionarAtividade"
             android:exported="false" />
         <activity
+            android:name=".MapboxPickerActivity"
+            android:exported="false" />
+        <activity
             android:name=".TelaPrincipal"
             android:exported="true">
             <intent-filter>
