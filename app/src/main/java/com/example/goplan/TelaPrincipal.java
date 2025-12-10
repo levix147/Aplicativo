@@ -46,13 +46,9 @@ public class TelaPrincipal extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Inicializa os componentes da UI
         iniciarComponentes();
-
-        // Configura o login com Google
         configurarGoogleSignIn();
 
-        // Launcher para o resultado do login com Google
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -70,14 +66,12 @@ public class TelaPrincipal extends AppCompatActivity {
                     }
                 });
 
-        // Listeners de clique
         configurarListeners();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // Checa se o usuario ja esta logado. Se sim, vai para a tela de visualizacao.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             irParaTelaDeVisualizacao();
@@ -118,8 +112,9 @@ public class TelaPrincipal extends AppCompatActivity {
     }
 
     private void configurarGoogleSignIn() {
+        // CORRECAO: Usando a chave do BuildConfig em vez do R.string
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
                 .requestEmail()
                 .build();
 

@@ -23,11 +23,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // Disponibiliza a chave do Google Maps para o AndroidManifest.xml (mantido por enquanto)
         manifestPlaceholders = [ MAPS_API_KEY:"${properties.getProperty("MAPS_API_KEY", "")}" ]
 
         // Disponibiliza as chaves para o codigo Java/Kotlin (BuildConfig)
         buildConfigField "String", "MAPS_API_KEY", "\"${properties.getProperty("MAPS_API_KEY", "")}\""
+        buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "\"${properties.getProperty("GOOGLE_WEB_CLIENT_ID", "")}\""
 
         // Disponibiliza o token do Mapbox como um recurso de string
         resValue "string", "mapbox_access_token", "\"${properties.getProperty("MAPBOX_ACCESS_TOKEN", "")}\""

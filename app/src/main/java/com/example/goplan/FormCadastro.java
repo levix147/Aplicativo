@@ -86,8 +86,9 @@ public class FormCadastro extends AppCompatActivity {
     }
 
     private void configurarGoogleSignIn() {
+        // CORRECAO: Usando a chave do BuildConfig em vez do R.string
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);

@@ -12,8 +12,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
+import com.mapbox.maps.plugin.annotation.AnnotationConfig;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
-import com.mapbox.maps.plugin.annotation.AnnotationsUtils; // <<< CORRECAO AQUI
+import com.mapbox.maps.plugin.annotation.AnnotationsUtils;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
@@ -99,9 +100,9 @@ public class DetalheEventoActivity extends AppCompatActivity {
     }
 
     private void adicionarMarcador(double latitude, double longitude) {
-        // CORRECAO AQUI: Usando a classe correta "AnnotationsUtils"
         AnnotationPlugin annotationApi = AnnotationsUtils.getAnnotations(mapView);
-        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationApi, mapView);
+        // A linha abaixo foi corrigida para passar a configuracao correta
+        PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationApi, new AnnotationConfig());
 
         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                 .withPoint(com.mapbox.geojson.Point.fromLngLat(longitude, latitude));
