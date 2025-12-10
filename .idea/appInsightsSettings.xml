@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.goplan" />
-                  <option name="mobileSdkAppId" value="1:1086228142420:android:3e138e9fd309bb90e5d0c1" />
-                  <option name="projectId" value="projeto-senai-3d6bb" />
-                  <option name="projectNumber" value="1086228142420" />
+                  <option name="mobileSdkAppId" value="1:289851214020:android:e525ad86a108ee7037a191" />
+                  <option name="projectId" value="tste-17f0b" />
+                  <option name="projectNumber" value="289851214020" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

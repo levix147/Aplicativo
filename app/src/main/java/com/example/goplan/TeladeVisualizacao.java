@@ -3,15 +3,21 @@ package com.example.goplan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -21,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TeladeVisualizacao extends AppCompatActivity {
+public class TeladeVisualizacao extends AppCompatActivity implements EventoAdapter.OnItemInteractionListener {
 
     private static final String TAG = "TeladeVisualizacao";
 
@@ -29,10 +35,12 @@ public class TeladeVisualizacao extends AppCompatActivity {
     private EventoAdapter eventoAdapter;
     private TarefaRepositorio tarefaRepositorio;
     private EditText editBusca;
-    private FirebaseAuth mAuth;
+    private ImageView btnPerfil, btnJoinEvent;
 
     private List<Tarefa> todasAsTarefas = new ArrayList<>();
     private ListenerRegistration listenerDoFirestore;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,14 @@ public class TeladeVisualizacao extends AppCompatActivity {
         setContentView(R.layout.activity_telade_visualizacao);
 
         mAuth = FirebaseAuth.getInstance();
+        tarefaRepositorio = new TarefaRepositorio();
+
+        // Configura o Google Sign-In Client para o logout
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         iniciarComponentes();
         configurarRecyclerView();
@@ -49,14 +65,12 @@ public class TeladeVisualizacao extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Inicia o listener do Firestore aqui para garantir que o usuario ja esta logado
-        configurarListenerDoFirestore();
+        atualizarUI(mAuth.getCurrentUser());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Para o listener quando a tela nao esta visivel para economizar recursos
         if (listenerDoFirestore != null) {
             listenerDoFirestore.remove();
         }
@@ -65,18 +79,44 @@ public class TeladeVisualizacao extends AppCompatActivity {
     private void iniciarComponentes() {
         recyclerViewEventos = findViewById(R.id.recycler_view_eventos);
         editBusca = findViewById(R.id.edit_busca);
-        tarefaRepositorio = new TarefaRepositorio();
+        btnPerfil = findViewById(R.id.btn_logout);
+        btnJoinEvent = findViewById(R.id.btn_join_event);
     }
 
     private void configurarRecyclerView() {
-        eventoAdapter = new EventoAdapter(new ArrayList<>());
+        eventoAdapter = new EventoAdapter(new ArrayList<>(), this);
         recyclerViewEventos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewEventos.setAdapter(eventoAdapter);
     }
 
     private void configurarListeners() {
         findViewById(R.id.btnAdicionarEvento).setOnClickListener(v -> {
-            startActivity(new Intent(TeladeVisualizacao.this, AdicionarAtividade.class));
+            if (isUserLoggedIn()) {
+                startActivity(new Intent(TeladeVisualizacao.this, AdicionarAtividade.class));
+            } else {
+                pedirLogin();
+            }
+        });
+
+        btnPerfil.setOnClickListener(v -> {
+            if (isUserLoggedIn()) {
+                // Logout completo
+                mAuth.signOut();
+                mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+                    atualizarUI(null);
+                    Toast.makeText(this, "Logout realizado com sucesso!", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                startActivity(new Intent(TeladeVisualizacao.this, LoginActivity.class));
+            }
+        });
+
+        btnJoinEvent.setOnClickListener(v -> {
+            if (isUserLoggedIn()) {
+                mostrarDialogoJuntarEvento();
+            } else {
+                pedirLogin();
+            }
         });
 
         editBusca.addTextChangedListener(new TextWatcher() {
@@ -93,35 +133,31 @@ public class TeladeVisualizacao extends AppCompatActivity {
         });
     }
 
-    private void configurarListenerDoFirestore() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            // Se nao ha usuario logado, volta para a tela de login
-            // Isso e uma medida de seguranca extra
-            startActivity(new Intent(this, TelaPrincipal.class));
-            finish();
-            return;
+    private void configurarListenerDoFirestore(FirebaseUser user) {
+        if (listenerDoFirestore != null) {
+            listenerDoFirestore.remove();
         }
 
-        String userId = currentUser.getUid();
+        if (user != null) {
+            String userId = user.getUid();
+            Query query = tarefaRepositorio.getTarefasCollection().whereArrayContains("membros", userId);
 
-        // Query ATUALIZADA com o filtro de seguranca
-        Query query = tarefaRepositorio.getTarefasCollection()
-                .whereEqualTo("userId", userId)
-                .orderBy("data", Query.Direction.DESCENDING);
-
-        listenerDoFirestore = query.addSnapshotListener(this, (snapshot, error) -> {
-            if (error != null) {
-                Log.e(TAG, "Erro ao ouvir as mudancas do Firestore", error);
-                return;
-            }
-            if (snapshot != null) {
-                todasAsTarefas = snapshot.toObjects(Tarefa.class);
-                filtrarLista(editBusca.getText().toString());
-            } else {
-                Log.d(TAG, "Snapshot nulo recebido");
-            }
-        });
+            listenerDoFirestore = query.addSnapshotListener(this, (snapshot, error) -> {
+                if (error != null) {
+                    Log.e(TAG, "Erro ao ouvir as mudancas do Firestore", error);
+                    return;
+                }
+                if (snapshot != null) {
+                    todasAsTarefas = snapshot.toObjects(Tarefa.class);
+                    filtrarLista(editBusca.getText().toString());
+                } else {
+                    Log.d(TAG, "Snapshot nulo recebido");
+                }
+            });
+        } else {
+            todasAsTarefas.clear();
+            eventoAdapter.atualizarLista(new ArrayList<>());
+        }
     }
 
     private void filtrarLista(String consulta) {
@@ -136,5 +172,92 @@ public class TeladeVisualizacao extends AppCompatActivity {
                     .collect(Collectors.toList());
         }
         eventoAdapter.atualizarLista(tarefasFiltradas);
+    }
+
+    @Override
+    public void onEditarClick(Tarefa tarefa) {
+        if (isUserLoggedIn() && tarefa.getUserId().equals(mAuth.getUid())) {
+            Intent intent = new Intent(this, AdicionarAtividade.class);
+            intent.putExtra("TAREFA_PARA_EDITAR", tarefa);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Você não tem permissão para editar este evento.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onExcluirClick(Tarefa tarefa) {
+        if (isUserLoggedIn() && tarefa.getUserId().equals(mAuth.getUid())) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Excluir Evento")
+                    .setMessage("Tem certeza que deseja excluir '" + tarefa.getTitulo() + "'?")
+                    .setPositiveButton("Excluir", (dialog, which) -> {
+                        tarefaRepositorio.excluirTarefa(tarefa.getId()).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(this, "Evento excluído com sucesso", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this, "Falha ao excluir evento", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Erro ao excluir tarefa", task.getException());
+                            }
+                        });
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        } else {
+            Toast.makeText(this, "Você não tem permissão para excluir este evento.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isUserLoggedIn() {
+        return mAuth.getCurrentUser() != null;
+    }
+
+    private void pedirLogin() {
+        new AlertDialog.Builder(this)
+                .setTitle("Login Necessário")
+                .setMessage("Você precisa fazer login para realizar esta ação.")
+                .setPositiveButton("Fazer Login", (dialog, which) -> {
+                    startActivity(new Intent(this, LoginActivity.class));
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+    
+    private void atualizarUI(FirebaseUser user) {
+        configurarListenerDoFirestore(user);
+    }
+
+    private void mostrarDialogoJuntarEvento() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Juntar-se a um Evento");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setHint("Digite o código do convite");
+        builder.setView(input);
+
+        builder.setPositiveButton("Entrar", (dialog, which) -> {
+            String codigo = input.getText().toString().toUpperCase().trim();
+            if (!codigo.isEmpty()) {
+                juntarEvento(codigo);
+            }
+        });
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void juntarEvento(String codigo) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) return;
+
+        tarefaRepositorio.juntarEvento(codigo, user.getUid())
+            .addOnSuccessListener(aVoid -> {
+                Toast.makeText(this, "Você entrou no evento!", Toast.LENGTH_SHORT).show();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Código inválido ou evento não encontrado.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Erro ao juntar evento", e);
+            });
     }
 }

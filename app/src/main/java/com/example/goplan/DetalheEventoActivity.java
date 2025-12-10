@@ -1,10 +1,15 @@
 package com.example.goplan;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,11 +61,25 @@ public class DetalheEventoActivity extends AppCompatActivity {
         TextView txtDescricao = findViewById(R.id.detalhe_descricao);
         TextView txtDataHora = findViewById(R.id.detalhe_data_hora);
         TextView txtLocal = findViewById(R.id.detalhe_local_texto);
+        TextView txtCodigoConvite = findViewById(R.id.detalhe_codigo_convite);
+        ImageView btnCopiar = findViewById(R.id.btn_copiar_codigo);
 
         txtTitulo.setText(tarefa.getTitulo());
         txtDescricao.setText(tarefa.getDescricao());
         txtDataHora.setText(String.format("%s às %s", tarefa.getData(), tarefa.getHora()));
         txtLocal.setText(tarefa.getLocal());
+        
+        if (tarefa.getCodigoDeConvite() != null && !tarefa.getCodigoDeConvite().isEmpty()) {
+            txtCodigoConvite.setText(tarefa.getCodigoDeConvite());
+            btnCopiar.setOnClickListener(v -> {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Código do Convite", tarefa.getCodigoDeConvite());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(this, "Código copiado!", Toast.LENGTH_SHORT).show();
+            });
+        } else {
+            txtCodigoConvite.setText("N/A");
+        }
     }
 
     private void iniciarMapa() {
@@ -101,7 +120,6 @@ public class DetalheEventoActivity extends AppCompatActivity {
 
     private void adicionarMarcador(double latitude, double longitude) {
         AnnotationPlugin annotationApi = AnnotationsUtils.getAnnotations(mapView);
-        // A linha abaixo foi corrigida para passar a configuracao correta
         PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationApi, new AnnotationConfig());
 
         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()

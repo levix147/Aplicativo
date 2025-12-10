@@ -2,8 +2,12 @@ package com.example.goplan;
 
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class TarefaRepositorio {
 
@@ -15,15 +19,39 @@ public class TarefaRepositorio {
         tarefasCollection = db.collection("tarefas");
     }
 
-    public void salvarTarefa(Tarefa tarefa) {
-        tarefasCollection.add(tarefa)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "Tarefa salva com ID: " + documentReference.getId()))
-                .addOnFailureListener(e -> Log.e(TAG, "Erro ao salvar tarefa", e));
+    public Task<DocumentReference> salvarTarefa(Tarefa tarefa) {
+        return tarefasCollection.add(tarefa);
+    }
+
+    public Task<Void> atualizarTarefa(Tarefa tarefa) {
+        if (tarefa.getId() == null || tarefa.getId().isEmpty()) {
+            return com.google.android.gms.tasks.Tasks.forException(new IllegalArgumentException("ID da tarefa inválido"));
+        }
+        return tarefasCollection.document(tarefa.getId()).set(tarefa);
+    }
+
+    public Task<Void> excluirTarefa(String tarefaId) {
+        if (tarefaId == null || tarefaId.isEmpty()) {
+            return com.google.android.gms.tasks.Tasks.forException(new IllegalArgumentException("ID da tarefa inválido"));
+        }
+        return tarefasCollection.document(tarefaId).delete();
+    }
+
+    public Task<Void> juntarEvento(String codigo, String userId) {
+        return tarefasCollection.whereEqualTo("codigoDeConvite", codigo)
+                .limit(1)
+                .get()
+                .onSuccessTask(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        throw new RuntimeException("Evento não encontrado.");
+                    }
+                    DocumentReference docRef = queryDocumentSnapshots.getDocuments().get(0).getReference();
+                    return docRef.update("membros", FieldValue.arrayUnion(userId));
+                });
     }
 
     public void atualizarStatusTarefa(String tarefaId, String novoStatus) {
         if (tarefaId == null || tarefaId.isEmpty()) {
-            Log.e(TAG, "ID da tarefa invalido para atualizacao.");
             return;
         }
         tarefasCollection.document(tarefaId)

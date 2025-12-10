@@ -44,7 +44,7 @@
                 app:layout_constraintTop_toTopOf="@+id/logo" />
 
             <ImageView
-                android:id="@+id/img_perfil"
+                android:id="@+id/btn_logout"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/background"
@@ -54,6 +54,20 @@
                 app:layout_constraintBottom_toBottomOf="@+id/logo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/logo" />
+
+            <ImageView
+                android:id="@+id/btn_join_event"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/background"
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_add"
+                android:layout_marginEnd="8dp"
+                app:tint="@color/gray_text"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_logout"
+                app:layout_constraintEnd_toStartOf="@+id/btn_logout"
+                app:layout_constraintTop_toTopOf="@+id/btn_logout"
+                android:contentDescription="Juntar-se a um evento" />
 
             <EditText
                 android:id="@+id/edit_busca"
@@ -78,7 +92,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- RecyclerView para a lista de eventos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_eventos"
         android:layout_width="match_parent"

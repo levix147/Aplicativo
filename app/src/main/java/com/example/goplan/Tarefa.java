@@ -5,11 +5,13 @@ import android.os.Parcelable;
 
 import com.google.firebase.firestore.DocumentId;
 
+import java.util.List;
+
 public class Tarefa implements Parcelable {
 
     @DocumentId
     private String id;
-    private String userId; // <<< CAMPO ADICIONADO
+    private String userId;
 
     private String titulo;
     private String descricao;
@@ -17,10 +19,12 @@ public class Tarefa implements Parcelable {
     private String hora;
     private String local;
     private String status;
+    
+    private String codigoDeConvite;
+    private List<String> membros;
 
     public Tarefa() {}
 
-    // Construtor atualizado para incluir o userId
     public Tarefa(String userId, String titulo, String descricao, String data, String hora, String local, String status) {
         this.userId = userId;
         this.titulo = titulo;
@@ -31,7 +35,17 @@ public class Tarefa implements Parcelable {
         this.status = status;
     }
 
-    // Implementacao do Parcelable atualizada
+    public Tarefa(String id, String userId, String titulo, String descricao, String data, String hora, String local, String status) {
+        this.id = id;
+        this.userId = userId;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.data = data;
+        this.hora = hora;
+        this.local = local;
+        this.status = status;
+    }
+
     protected Tarefa(Parcel in) {
         id = in.readString();
         userId = in.readString();
@@ -41,6 +55,8 @@ public class Tarefa implements Parcelable {
         hora = in.readString();
         local = in.readString();
         status = in.readString();
+        codigoDeConvite = in.readString();
+        membros = in.createStringArrayList();
     }
 
     @Override
@@ -53,6 +69,8 @@ public class Tarefa implements Parcelable {
         dest.writeString(hora);
         dest.writeString(local);
         dest.writeString(status);
+        dest.writeString(codigoDeConvite);
+        dest.writeStringList(membros);
     }
 
     public static final Creator<Tarefa> CREATOR = new Creator<Tarefa>() {
@@ -72,7 +90,6 @@ public class Tarefa implements Parcelable {
         return 0;
     }
 
-    // Getters e Setters, incluindo para o novo campo
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getUserId() { return userId; }
@@ -89,4 +106,8 @@ public class Tarefa implements Parcelable {
     public void setLocal(String local) { this.local = local; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getCodigoDeConvite() { return codigoDeConvite; }
+    public void setCodigoDeConvite(String codigoDeConvite) { this.codigoDeConvite = codigoDeConvite; }
+    public List<String> getMembros() { return membros; }
+    public void setMembros(List<String> membros) { this.membros = membros; }
 }

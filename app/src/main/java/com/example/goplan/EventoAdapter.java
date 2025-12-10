@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,9 +17,16 @@ import java.util.List;
 public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder> {
 
     private List<Tarefa> listaDeTarefas;
+    private OnItemInteractionListener listener;
 
-    public EventoAdapter(List<Tarefa> listaDeTarefas) {
+    public interface OnItemInteractionListener {
+        void onEditarClick(Tarefa tarefa);
+        void onExcluirClick(Tarefa tarefa);
+    }
+
+    public EventoAdapter(List<Tarefa> listaDeTarefas, OnItemInteractionListener listener) {
         this.listaDeTarefas = listaDeTarefas;
+        this.listener = listener;
     }
 
     @NonNull
@@ -39,11 +48,33 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
             holder.txtTag.setVisibility(View.GONE);
         }
 
+        // CORREÇÃO: Voltando a abrir a tela de detalhes do evento
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, DetalheEventoActivity.class);
             intent.putExtra("TAREFA_EXTRA", tarefaAtual);
             context.startActivity(intent);
+        });
+
+        holder.btnMenuOpcoes.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(v.getContext(), holder.btnMenuOpcoes);
+            popup.inflate(R.menu.menu_opcoes_evento);
+            popup.setOnMenuItemClickListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.menu_editar) {
+                    if (listener != null) {
+                        listener.onEditarClick(tarefaAtual);
+                    }
+                    return true;
+                } else if (itemId == R.id.menu_excluir) {
+                    if (listener != null) {
+                        listener.onExcluirClick(tarefaAtual);
+                    }
+                    return true;
+                }
+                return false;
+            });
+            popup.show();
         });
     }
 
@@ -61,12 +92,14 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
         public TextView txtTitulo;
         public TextView txtData;
         public TextView txtTag;
+        public ImageView btnMenuOpcoes;
 
         public EventoViewHolder(View view) {
             super(view);
             txtTitulo = view.findViewById(R.id.txtTitulo);
             txtData = view.findViewById(R.id.txtData);
             txtTag = view.findViewById(R.id.txtTag);
+            btnMenuOpcoes = view.findViewById(R.id.btnMenuOpcoes);
         }
     }
 }

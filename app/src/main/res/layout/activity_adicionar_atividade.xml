@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/titulo_tela"
+                android:id="@+id/txt_titulo_pagina"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Criar Evento"
