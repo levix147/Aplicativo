@@ -9,6 +9,7 @@ public class Tarefa implements Parcelable {
 
     @DocumentId
     private String id;
+    private String userId; // <<< CAMPO ADICIONADO
 
     private String titulo;
     private String descricao;
@@ -19,7 +20,9 @@ public class Tarefa implements Parcelable {
 
     public Tarefa() {}
 
-    public Tarefa(String titulo, String descricao, String data, String hora, String local, String status) {
+    // Construtor atualizado para incluir o userId
+    public Tarefa(String userId, String titulo, String descricao, String data, String hora, String local, String status) {
+        this.userId = userId;
         this.titulo = titulo;
         this.descricao = descricao;
         this.data = data;
@@ -28,14 +31,28 @@ public class Tarefa implements Parcelable {
         this.status = status;
     }
 
+    // Implementacao do Parcelable atualizada
     protected Tarefa(Parcel in) {
         id = in.readString();
+        userId = in.readString();
         titulo = in.readString();
         descricao = in.readString();
         data = in.readString();
         hora = in.readString();
         local = in.readString();
         status = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(userId);
+        dest.writeString(titulo);
+        dest.writeString(descricao);
+        dest.writeString(data);
+        dest.writeString(hora);
+        dest.writeString(local);
+        dest.writeString(status);
     }
 
     public static final Creator<Tarefa> CREATOR = new Creator<Tarefa>() {
@@ -55,19 +72,11 @@ public class Tarefa implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(titulo);
-        dest.writeString(descricao);
-        dest.writeString(data);
-        dest.writeString(hora);
-        dest.writeString(local);
-        dest.writeString(status);
-    }
-
+    // Getters e Setters, incluindo para o novo campo
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
     public String getDescricao() { return descricao; }

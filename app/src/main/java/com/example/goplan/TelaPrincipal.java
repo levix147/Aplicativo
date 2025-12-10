@@ -23,6 +23,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -92,18 +94,7 @@ public class TelaPrincipal extends AppCompatActivity {
             iniciarLoginComGoogle();
         });
 
-        btnEntrar.setOnClickListener(v -> {
-            String email = editEmail.getText().toString().trim();
-            String senha = editSenha.getText().toString().trim();
-
-            if (email.isEmpty() || senha.isEmpty()) {
-                Toast.makeText(this, "Preencha e-mail e senha.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            progressBar.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "Login com e-mail/senha não implementado.", Toast.LENGTH_SHORT).show();
-            progressBar.setVisibility(View.INVISIBLE);
-        });
+        btnEntrar.setOnClickListener(v -> loginComEmailESenha());
 
         TextView textTelaCadastro = findViewById(R.id.text_telacadastro);
         textTelaCadastro.setOnClickListener(v -> {
@@ -111,8 +102,38 @@ public class TelaPrincipal extends AppCompatActivity {
         });
     }
 
+    private void loginComEmailESenha() {
+        String email = editEmail.getText().toString().trim();
+        String senha = editSenha.getText().toString().trim();
+
+        if (email.isEmpty() || senha.isEmpty()) {
+            Toast.makeText(this, "Preencha e-mail e senha.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        progressBar.setVisibility(View.VISIBLE);
+
+        mAuth.signInWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(this, task -> {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithEmail:success");
+                        irParaTelaDeVisualizacao();
+                    } else {
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        try {
+                            throw task.getException();
+                        } catch (FirebaseAuthInvalidUserException e) {
+                            Toast.makeText(TelaPrincipal.this, "Usuário não encontrado.", Toast.LENGTH_SHORT).show();
+                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                            Toast.makeText(TelaPrincipal.this, "Senha incorreta.", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(TelaPrincipal.this, "Falha no login.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
     private void configurarGoogleSignIn() {
-        // CORRECAO: Usando a chave do BuildConfig em vez do R.string
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
                 .requestEmail()
@@ -143,6 +164,7 @@ public class TelaPrincipal extends AppCompatActivity {
 
     private void irParaTelaDeVisualizacao() {
         Intent intent = new Intent(TelaPrincipal.this, TeladeVisualizacao.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

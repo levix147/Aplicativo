@@ -26,6 +26,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +43,7 @@ public class AdicionarAtividade extends AppCompatActivity {
     private EditText editTitulo, editDescricao, editData, editHora, editLocal;
     private SwitchMaterial switchGoogleCalendar;
     private TarefaRepositorio tarefaRepositorio;
+    private FirebaseAuth mAuth; // <<< Firebase Auth adicionado
 
     private ActivityResultLauncher<String> requestCalendarPermissionLauncher;
     private ActivityResultLauncher<Intent> mapPickerLauncher;
@@ -54,12 +57,15 @@ public class AdicionarAtividade extends AppCompatActivity {
         setContentView(R.layout.activity_adicionar_atividade);
 
         tarefaRepositorio = new TarefaRepositorio();
+        mAuth = FirebaseAuth.getInstance(); // <<< Firebase Auth inicializado
 
         iniciarComponentes();
         configurarListeners();
         configurarLaunchers();
         configurarClienteGoogleCalendar();
     }
+
+    // ... (metodos existentes sem alteracao) ...
 
     private void iniciarComponentes() {
         editTitulo = findViewById(R.id.edit_titulo);
@@ -144,12 +150,16 @@ public class AdicionarAtividade extends AppCompatActivity {
 
     private void salvarApenasTarefaLocal() {
         Tarefa novaTarefa = criarTarefaAPartirDoForm();
-        tarefaRepositorio.salvarTarefa(novaTarefa);
-        Toast.makeText(this, "Evento criado com sucesso!", Toast.LENGTH_SHORT).show();
+        if(novaTarefa != null) {
+            tarefaRepositorio.salvarTarefa(novaTarefa);
+            Toast.makeText(this, "Evento criado com sucesso!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void salvarTarefaEEventoNoCalendario() {
         Tarefa novaTarefa = criarTarefaAPartirDoForm();
+        if(novaTarefa == null) return;
+
         tarefaRepositorio.salvarTarefa(novaTarefa);
 
         new Thread(() -> {
@@ -183,13 +193,22 @@ public class AdicionarAtividade extends AppCompatActivity {
         }).start();
     }
 
+    // Metodo ATUALIZADO para incluir o userId
     private Tarefa criarTarefaAPartirDoForm() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            // Isso nao deveria acontecer se o usuario chegou aqui, mas e uma boa verificacao de seguranca
+            Toast.makeText(this, "Erro: Usuário não autenticado.", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        String userId = user.getUid();
         String titulo = editTitulo.getText().toString();
         String descricao = editDescricao.getText().toString();
         String data = editData.getText().toString();
         String hora = editHora.getText().toString();
         String local = editLocal.getText().toString();
-        return new Tarefa(titulo, descricao, data, hora, local, "A_FAZER");
+        return new Tarefa(userId, titulo, descricao, data, hora, local, "A_FAZER");
     }
 
     private void mostrarDatePicker() {
