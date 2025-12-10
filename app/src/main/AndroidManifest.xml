@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissoes de Localizacao -->
+    <!-- Permissoes -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- Permissao para ESCREVER no Google Calendar -->
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
@@ -25,6 +23,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
 
+        <!-- Activities -->
         <activity
             android:name=".TeladeVisualizacao"
             android:exported="false" />
@@ -33,6 +32,9 @@
             android:exported="false" />
         <activity
             android:name=".MapboxPickerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetalheEventoActivity"
             android:exported="false" />
         <activity
             android:name=".TelaPrincipal"

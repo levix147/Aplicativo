@@ -1,4 +1,4 @@
-package com.example.aplicativo;
+package com.example.goplan;
 
 import android.Manifest;
 import android.app.Activity;
@@ -11,8 +11,6 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,7 +76,6 @@ public class AdicionarAtividade extends AppCompatActivity {
         editData.setOnClickListener(v -> mostrarDatePicker());
         editHora.setOnClickListener(v -> mostrarTimePicker());
 
-        // Listener para abrir a tela do mapa
         editLocal.setOnClickListener(v -> {
             Intent intent = new Intent(AdicionarAtividade.this, MapboxPickerActivity.class);
             mapPickerLauncher.launch(intent);
@@ -86,7 +83,6 @@ public class AdicionarAtividade extends AppCompatActivity {
     }
 
     private void configurarLaunchers() {
-        // Launcher para o pedido de permissao do calendario
         requestCalendarPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 salvarTarefaEEventoNoCalendario();
@@ -95,7 +91,6 @@ public class AdicionarAtividade extends AppCompatActivity {
             }
         });
 
-        // Launcher para receber o resultado da MapboxPickerActivity
         mapPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {

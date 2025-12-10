@@ -1,4 +1,4 @@
-package com.example.aplicativo;
+package com.example.goplan;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -35,22 +35,16 @@ public class MapboxPickerActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Carrega o mapa com um estilo padrao
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS);
 
-        // Move a camera para a localizacao atual do usuario
         moverCameraParaLocalizacaoAtual();
 
-        // Configura o botao de confirmar
         findViewById(R.id.bt_confirmar_local).setOnClickListener(v -> {
-            // Pega as coordenadas do centro do mapa
             double latitude = mapView.getMapboxMap().getCameraState().getCenter().latitude();
             double longitude = mapView.getMapboxMap().getCameraState().getCenter().longitude();
 
-            // Converte as coordenadas em endereco
             String endereco = getEnderecoFromCoordinates(latitude, longitude);
 
-            // Retorna o endereco para a activity anterior
             Intent resultIntent = new Intent();
             resultIntent.putExtra("endereco_selecionado", endereco);
             setResult(Activity.RESULT_OK, resultIntent);
@@ -58,16 +52,14 @@ public class MapboxPickerActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("MissingPermission") // A permissao ja foi solicitada na AdicionarAtividade
+    @SuppressLint("MissingPermission")
     private void moverCameraParaLocalizacaoAtual() {
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
             if (location != null) {
-                // Cria a posicao inicial da camera
                 CameraOptions initialCameraOptions = new CameraOptions.Builder()
                         .center(com.mapbox.geojson.Point.fromLngLat(location.getLongitude(), location.getLatitude()))
                         .zoom(14.0)
                         .build();
-                // Move a camera para a posicao
                 mapView.getMapboxMap().setCamera(initialCameraOptions);
             }
         });
@@ -88,7 +80,6 @@ public class MapboxPickerActivity extends AppCompatActivity {
         }
     }
 
-    // Garante que o MapView pare de renderizar quando a activity for destruida
     @Override
     protected void onDestroy() {
         super.onDestroy();

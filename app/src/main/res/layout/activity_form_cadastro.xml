@@ -181,24 +181,6 @@
                         tools:ignore="ContentDescription" />
                 </FrameLayout>
 
-                <FrameLayout
-                    android:id="@+id/btn_facebook"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="20dp"
-                    android:background="@drawable/background"
-                    android:backgroundTint="#F5F5F5"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_facebook"
-                        tools:ignore="ContentDescription" />
-                </FrameLayout>
             </LinearLayout>
 
             <TextView

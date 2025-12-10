@@ -1,9 +1,14 @@
-# Arquivos do sistema
+# Arquivos de Build gerados pelo Android Studio
 .gradle
 /build
 /captures
-.idea
-*.iml
+*.apk
 
-# Arquivo de propriedades locais (NUNCA ENVIE ESTE ARQUIVO!)
+# Arquivos do sistema operacional e IDE
+.idea/
+*.iml
+.DS_Store
+
+# Arquivos de segredos (NUNCA ENVIE ESTES ARQUIVOS!)
 local.properties
+app/google-services.json

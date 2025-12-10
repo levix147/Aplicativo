@@ -1,17 +1,18 @@
-package com.example.aplicativo;
+package com.example.goplan;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,39 +22,52 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class TelaPrincipal extends AppCompatActivity {
+public class FormCadastro extends AppCompatActivity {
 
-    private static final String TAG = "TelaPrincipal";
+    private static final String TAG = "FormCadastro";
 
+    private EditText editNome, editEmail, editSenha;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private ActivityResultLauncher<Intent> googleSignInLauncher;
 
-    private FrameLayout btnGoogle;
-    private ProgressBar progressBar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tela_principal);
+        setContentView(R.layout.activity_form_cadastro);
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Esconde o botão de entrar e campos de email/senha, pois vamos focar no login social
-        // (Em um app real, você poderia manter ambos)
-        findViewById(R.id.bt_entrar).setVisibility(View.GONE);
-        findViewById(R.id.edit_email).setVisibility(View.GONE);
-        findViewById(R.id.edit_senha).setVisibility(View.GONE);
-        findViewById(R.id.text_esqueci_senha).setVisibility(View.GONE);
-
-        btnGoogle = findViewById(R.id.btn_google);
-        progressBar = findViewById(R.id.progressbar);
-
+        iniciarComponentes();
         configurarGoogleSignIn();
+        configurarLaunchers();
+        configurarListeners();
+    }
 
+    private void iniciarComponentes() {
+        editNome = findViewById(R.id.edit_nome);
+        editEmail = findViewById(R.id.edit_email);
+        editSenha = findViewById(R.id.edit_senha);
+    }
+
+    private void configurarListeners() {
+        findViewById(R.id.bt_voltar).setOnClickListener(v -> finish());
+        findViewById(R.id.text_ja_tenho_conta).setOnClickListener(v -> finish());
+
+        FrameLayout btnGoogle = findViewById(R.id.btn_google);
+        btnGoogle.setOnClickListener(v -> {
+            iniciarLoginComGoogle();
+        });
+
+        AppCompatButton btCadastrar = findViewById(R.id.bt_cadastrar);
+        btCadastrar.setOnClickListener(v -> {
+            Toast.makeText(this, "Cadastro com e-mail/senha não implementado.", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void configurarLaunchers() {
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -61,48 +75,21 @@ public class TelaPrincipal extends AppCompatActivity {
                         Intent data = result.getData();
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                         try {
-                            // Login com Google bem-sucedido, agora autenticar com Firebase
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             firebaseAuthComGoogle(account.getIdToken());
                         } catch (ApiException e) {
-                            // Falha no login com Google
                             Log.w(TAG, "Google sign in failed", e);
-                            progressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(this, "Falha no login com Google.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-
-        btnGoogle.setOnClickListener(v -> {
-            progressBar.setVisibility(View.VISIBLE);
-            iniciarLoginComGoogle();
-        });
-        
-        // Mover para a tela de cadastro (se houver)
-        TextView textTelaCadastro = findViewById(R.id.text_telacadastro);
-        textTelaCadastro.setOnClickListener(v -> {
-            // Intent para a tela de cadastro, se existir
-            // startActivity(new Intent(TelaPrincipal.this, FormCadastro.class));
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Checar se o usuario ja esta logado. Se sim, vai para a tela de visualizacao.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            irParaTelaDeVisualizacao();
-        }
     }
 
     private void configurarGoogleSignIn() {
-        // Configura o Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // Essencial para Firebase
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
@@ -116,22 +103,19 @@ public class TelaPrincipal extends AppCompatActivity {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Login com Firebase bem-sucedido
                         Log.d(TAG, "signInWithCredential:success");
                         irParaTelaDeVisualizacao();
                     } else {
-                        // Se o login falhar
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Toast.makeText(TelaPrincipal.this, "Falha na autenticação.",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FormCadastro.this, "Falha na autenticação.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void irParaTelaDeVisualizacao() {
-        Intent intent = new Intent(TelaPrincipal.this, TeladeVisualizacao.class);
+        Intent intent = new Intent(FormCadastro.this, TeladeVisualizacao.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish(); // Finaliza a tela principal para nao voltar para ela ao apertar "voltar"
+        finish();
     }
 }

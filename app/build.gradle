@@ -10,11 +10,12 @@ if (rootProject.file("local.properties").exists()) {
 }
 
 android {
-    namespace 'com.example.aplicativo'
+    // Namespace e Application ID devem ser consistentes
+    namespace 'com.example.goplan'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.aplicativo"
+        applicationId "com.example.goplan"
         minSdk 24
         targetSdk 34
         versionCode 1
@@ -58,8 +59,8 @@ dependencies {
     implementation 'androidx.activity:activity:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:33.1.0')
+    // Import the Firebase BoM (versao atualizada)
+    implementation platform('com.google.firebase:firebase-bom:34.6.0')
 
     // Dependencias do Firebase
     implementation 'com.google.firebase:firebase-analytics'

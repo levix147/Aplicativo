@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.aplicativo" />
-                  <option name="mobileSdkAppId" value="1:355425676518:android:2aeceafb70e18180e7df27" />
-                  <option name="projectId" value="goplan-7c678" />
-                  <option name="projectNumber" value="355425676518" />
+                  <option name="appId" value="com.example.goplan" />
+                  <option name="mobileSdkAppId" value="1:1086228142420:android:3e138e9fd309bb90e5d0c1" />
+                  <option name="projectId" value="projeto-senai-3d6bb" />
+                  <option name="projectNumber" value="1086228142420" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

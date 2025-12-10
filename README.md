@@ -1,52 +1,62 @@
 # GoPlan - Aplicativo de Gerenciamento de Eventos para Android
 
-GoPlan é um aplicativo Android desenvolvido em Java que funciona como um quadro Kanban para o gerenciamento de tarefas e eventos. O projeto demonstra a integração com várias APIs modernas e segue as melhores práticas de desenvolvimento Android.
+GoPlan é um aplicativo Android desenvolvido em Java que funciona como um sistema de gerenciamento de tarefas e eventos. O projeto demonstra a integração com várias APIs modernas, como Firebase, Mapbox e Google Calendar, seguindo as melhores práticas de desenvolvimento Android.
 
 ## Funcionalidades Principais
 
-- **Autenticação de Usuários**: Login rápido e seguro utilizando a conta do Google (Firebase Authentication).
-- **Quadro Kanban Interativo**: Organize tarefas visualmente em colunas "A Fazer", "Fazendo" e "Concluído" com uma interface de arrastar e soltar (Drag and Drop).
-- **Banco de Dados em Tempo Real**: As tarefas são sincronizadas instantaneamente entre dispositivos usando o Cloud Firestore do Firebase.
-- **Criação de Eventos**: Formulário completo para adicionar novos eventos com título, descrição, data e hora.
-- **Seleção de Local com Mapa**: Integração com a API do **Mapbox** para permitir que o usuário selecione a localização do evento em um mapa interativo.
-- **Integração com Google Calendar**: Opção para adicionar o evento criado diretamente na agenda do Google do usuário.
-- **Segurança de API Keys**: As chaves de API são protegidas e não são expostas no código-fonte, sendo carregadas a partir de um arquivo `local.properties` ignorado pelo Git.
+- **Autenticação de Usuários**: Login e cadastro simplificados utilizando contas Google (via Firebase Authentication).
+- **Banco de Dados em Tempo Real**: Os eventos são salvos e sincronizados instantaneamente com o Cloud Firestore.
+- **Lista de Eventos com Busca**: Visualização de todos os eventos em uma lista eficiente com funcionalidade de busca por nome.
+- **Detalhes do Evento com Mapa**: Visualização dos detalhes completos de um evento, incluindo um mapa interativo (Mapbox) que mostra a localização.
+- **Criação de Eventos Completa**:
+    - Seleção de local em um mapa interativo (Mapbox).
+    - Seleção de data e hora.
+    - Opção de adicionar o evento criado diretamente na agenda do usuário (Google Calendar API).
+- **Segurança de Chaves de API**: Todas as chaves e tokens são mantidos fora do controle de versão para máxima segurança.
 
-## Como Executar o Projeto
+## 🛠️ Como Configurar e Executar o Projeto
 
-1.  **Clone o Repositório**
-    ```sh
-    git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
-    ```
+Para compilar e executar este projeto, você precisará fornecer seus próprios arquivos de configuração e chaves de API. Siga os passos abaixo.
 
-2.  **Configure o Firebase**
-    - Crie um novo projeto no [Firebase Console](https://console.firebase.google.com/).
-    - Adicione um aplicativo Android ao seu projeto com o nome de pacote `com.example.aplicativo`.
-    - Baixe o arquivo `google-services.json` e coloque-o na pasta `app/` do projeto.
-    - Na seção **Authentication**, ative o provedor de login do **Google**.
-    - Na seção **Firestore Database**, crie um banco de dados em modo de teste.
+### 1. Configure o Firebase
 
-3.  **Configure as APIs e Chaves**
-    - No `local.properties` (crie este arquivo na raiz do projeto), adicione suas chaves:
-      ```properties
-      # Chave de API do Google Cloud para o Geocoder e Calendar
-      MAPS_API_KEY=SUA_CHAVE_API_DO_GOOGLE_CLOUD
+- Vá para o [Firebase Console](https://console.firebase.google.com/) e crie um novo projeto.
+- Adicione um aplicativo Android ao seu projeto com o nome de pacote: `com.example.goplan`.
+- Baixe o arquivo `google-services.json` gerado.
+- **Coloque o arquivo `google-services.json` na pasta `app/` do projeto.**
+- No console do Firebase, habilite os seguintes serviços:
+    - **Authentication**: Ative o provedor de login **Google**.
+    - **Firestore Database**: Crie um novo banco de dados (pode ser em modo de teste).
 
-      # Token de Acesso Público do Mapbox
-      MAPBOX_ACCESS_TOKEN=SEU_TOKEN_DE_ACESSO_DO_MAPBOX
-      ```
-    - Ative as seguintes APIs no seu [Google Cloud Console](https://console.cloud.google.com/apis/library):
-      - Google Calendar API
-      - Geocoding API
+### 2. Configure as Chaves de API e Tokens
 
-4.  **Abra no Android Studio**
-    - Abra o projeto no Android Studio, aguarde a sincronização do Gradle e execute o aplicativo.
+- Na **raiz do projeto**, crie um arquivo chamado `local.properties`.
+- Adicione suas chaves e tokens a este arquivo, no seguinte formato:
 
-## Tecnologias e APIs Utilizadas
+  ```properties
+  # Chave de API do Google Cloud. Usada para Geocoding e Google Calendar API.
+  MAPS_API_KEY=SUA_CHAVE_API_DO_GOOGLE_CLOUD
+
+  # Token de Acesso Público do Mapbox. Usado para os mapas.
+  MAPBOX_ACCESS_TOKEN=SEU_TOKEN_DE_ACESSO_DO_MAPBOX
+  ```
+
+- **Obtenha as chaves:**
+    - `MAPS_API_KEY`: Crie no [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Lembre-se de ativar as APIs **Geocoding API** e **Google Calendar API**.
+    - `MAPBOX_ACCESS_TOKEN`: Crie uma conta no [Mapbox](https://www.mapbox.com/) e copie seu "Default public token".
+
+### 3. Compile e Execute
+
+- Abra o projeto no Android Studio.
+- Sincronize o projeto com os arquivos Gradle (Sync Project with Gradle Files).
+- Compile e execute o aplicativo em um emulador ou dispositivo físico.
+
+## Tecnologias Utilizadas
 
 - **Linguagem**: Java
+- **Arquitetura**: Android SDK nativo
 - **Banco de Dados**: Cloud Firestore
-- **Autenticação**: Firebase Authentication com Google Sign-In
+- **Autenticação**: Firebase Authentication
 - **Mapas**: Mapbox Maps SDK for Android
 - **Agenda**: Google Calendar API
-- **Localização**: Google Play Services for Location e Geocoder API
+- **Localização**: Google Play Services & Geocoder API
